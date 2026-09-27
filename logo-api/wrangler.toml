@@ -6,7 +6,7 @@ compatibility_date = "2025-09-01"
 # Which websites may use this logo finder. Put your GitHub Pages address here
 # (no trailing slash). Keep localhost only while you test on your computer.
 [vars]
-ALLOWED_ORIGINS = "https://0x-man.github.io,http://localhost:5173"
+ALLOWED_ORIGINS = "https://0x-man.github.io"
 
 # At most 30 requests per minute from one visitor's IP address.
 [[ratelimits]]
