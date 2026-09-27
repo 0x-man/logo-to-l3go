@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Logo to Bricks</title>
+  <meta name="description" content="Turn any company logo into a brick sign you can really build: 3D build animation, PDF instructions and a parts list for LEGO Pick a Brick or BrickLink.">
+  <meta name="theme-color" content="#B4DBF1">
+  <meta name="referrer" content="no-referrer">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Logo to Bricks">
+  <meta property="og:description" content="Turn any company logo into a brick sign you can really build.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3' fill='%23B4DBF1'/%3E%3Crect x='2' y='5' width='12' height='8' fill='%23C91A09'/%3E%3Crect x='4' y='3' width='3' height='2' fill='%23C91A09'/%3E%3Crect x='9' y='3' width='3' height='2' fill='%23C91A09'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="/src/style.css">
+</head>
+<body>
+  <header class="top">
+    <a class="brand" href="./">Logo to Bricks</a>
+    <span class="tag">Free · open source</span>
+  </header>
+
+  <main>
+    <section class="hero">
+      <h1>Turn a logo into a brick sign you can really build</h1>
+      <p class="lede">Type a company’s website or drop its logo. You get a 3D build animation, step-by-step instructions and the parts list, ready to order.</p>
+    </section>
+
+    <section class="panel" id="input-panel">
+      <div class="choose">
+        <form class="by-number by-site" id="by-site" autocomplete="off" novalidate>
+          <label for="site" class="drop-title">From a website</label>
+          <div class="num-row site-row">
+            <input id="site" type="url" inputmode="url" spellcheck="false" autocapitalize="off" maxlength="300" placeholder="example.com" aria-describedby="site-help">
+            <button class="go" type="submit" id="site-go">Find logo</button>
+          </div>
+          <span class="drop-sub" id="site-help">We look for the logo on the site’s home page.</span>
+        </form>
+        <span class="or" aria-hidden="true">or</span>
+        <label class="drop" id="drop" tabindex="0">
+          <input type="file" id="file" accept="image/png,image/jpeg,image/webp,image/gif,image/svg+xml,image/avif,.svg,.ico" hidden>
+          <span class="drop-title">Drop the logo file</span>
+          <span class="drop-sub"><u>Choose a file</u> or paste it. PNG, SVG, JPG or WebP. A transparent background works best.</span>
+        </label>
+      </div>
+      <div class="found" id="found" hidden>
+        <p class="found-title" id="found-title"></p>
+        <div class="found-row" id="found-row" role="radiogroup" aria-label="Logos found"></div>
+      </div>
+      <p class="privacy"><strong>Files stay on your device.</strong> A dropped logo is read in your browser only. A website address goes to our logo finder, which opens that page, picks out images and forgets them. No accounts, no tracking, no AI.</p>
+      <div class="examples">
+        <span>Try a made-up logo:</span>
+        <div id="examples" class="example-row"></div>
+      </div>
+      <p class="error" id="error" role="alert" hidden></p>
+    </section>
+
+    <nav class="secnav" id="secnav" hidden aria-label="Sections">
+      <a href="#sec-bust" data-sec="sec-bust"><i>1</i>Your sign</a>
+      <a href="#sec-manual" data-sec="sec-manual"><i>2</i>Instructions</a>
+      <a href="#sec-buy" data-sec="sec-buy"><i>3</i>Buy the bricks</a>
+    </nav>
+
+    <div class="result" id="result" hidden>
+      <section class="sec" id="sec-bust">
+        <div class="sec-hd"><span class="num">1</span><div><h2>Your sign</h2><p id="bust-sub">Built and checked in your browser</p></div></div>
+        <div class="toolbar">
+          <div class="sizes" role="radiogroup" aria-label="Size">
+            <button class="size" data-size="mini" role="radio">Mini <small>1 pixel = 1 stud</small></button>
+            <button class="size" data-size="xl" role="radio">XL <small>1 pixel = 2×2 studs</small></button>
+          </div>
+          <div class="sizes" role="radiogroup" aria-label="Style">
+            <button class="size style" data-style="panel" role="radio">Panel <small>logo on a board</small></button>
+            <button class="size style" data-style="cutout" role="radio">Cut-out <small>just the logo</small></button>
+          </div>
+          <div class="actions">
+            <button id="replay" class="ghost">Replay</button>
+            <button id="skip" class="ghost">Skip</button>
+          </div>
+        </div>
+        <div class="tune">
+          <label class="field" for="detail">Detail <input type="range" id="detail" min="12" max="64" step="1" value="32"><output id="detail-out" for="detail"></output></label>
+          <label class="field" for="ncolors">Colours
+            <select id="ncolors"><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6" selected>6</option><option value="8">8</option></select>
+          </label>
+          <label class="field" for="panel-color" id="panel-field">Panel
+            <select id="panel-color"><option value="auto">Auto</option></select>
+          </label>
+          <label class="field" for="plate-label">Name plate <input id="plate-label" maxlength="16" placeholder="optional" autocomplete="off"></label>
+          <label class="field check" for="keep-bg"><input type="checkbox" id="keep-bg"> Keep the background</label>
+        </div>
+        <div class="stage">
+          <canvas id="view" aria-label="3D view of the brick sign"></canvas>
+          <div class="busy" id="busy" hidden><span class="spinner"></span><span id="busy-text">Building…</span></div>
+          <p class="hint" id="hint" hidden>Drag to turn · pinch or scroll to zoom</p>
+        </div>
+        <div class="stats" id="stats"></div>
+        <details class="more" id="more">
+          <summary><span class="pill" id="pill"></span><span class="status-short" id="status-short"></span><span class="more-link">More info</span></summary>
+          <div class="more-body">
+            <div class="read">
+              <canvas id="grid" width="96" height="96" aria-label="The logo as we read it"></canvas>
+              <div><strong>What we read</strong><br><span id="read-text"></span></div>
+            </div>
+            <ul class="checks" id="checks"></ul>
+            <ul class="notes" id="notes"></ul>
+          </div>
+        </details>
+        <div class="sub">
+          <span class="vids"><button id="vid-square" class="vid-btn"><span aria-hidden="true">🎬</span><span><b>Download video</b><small>Square · 24 s</small></span></button><button id="vid-story" class="vid-btn"><span aria-hidden="true">📱</span><span><b>Download video</b><small>9:16 story · 24 s</small></span></button></span>
+        </div>
+      </section>
+
+      <section class="sec" id="sec-manual">
+        <div class="sec-hd"><span class="num">2</span><div><h2>Instructions</h2><p id="manual-sub">One page per layer · flip through them here</p></div></div>
+        <div class="reader">
+          <div class="page-view" id="page-view">
+            <canvas id="page-canvas" width="1600" height="1131" aria-label="Instructions page"></canvas>
+            <button class="pg-arrow l" id="pg-prev" aria-label="Previous page">‹</button>
+            <button class="pg-arrow r" id="pg-next" aria-label="Next page">›</button>
+          </div>
+          <div class="pg-slider"><span id="pg-first">Cover</span><input type="range" id="pg-range" min="1" max="1" value="1" aria-label="Page"><strong id="pg-label">Cover</strong></div>
+          <div class="thumbs" id="thumbs"></div>
+          <div class="reader-dl">
+            <button id="dl-pdf" class="act kit small-act"><span class="ic" aria-hidden="true">⬇</span><span><b>Download instructions</b><small id="pdf-note">PDF</small></span></button>
+            <button id="dl-kit" class="act order small-act"><span class="ic" aria-hidden="true">📦</span><span><b>Download full kit</b><small>ZIP · instructions + parts list</small></span></button>
+          </div>
+        </div>
+      </section>
+
+      <section class="sec" id="sec-buy">
+        <div class="sec-hd"><span class="num">3</span><div><h2>Buy the bricks</h2><p>You order and pay directly on LEGO or BrickLink. Nothing goes through this site.</p></div></div>
+        <div class="shoplist" id="shoplist">
+          <div class="shop-top"><b>Your shopping list</b><span id="shop-sum"></span></div>
+          <div class="shop-grid" id="shop-grid"></div>
+          <button class="shop-more" id="shop-more">See all lots ▾</button>
+          <div class="shop-keys"><span><i class="dot lego"></i> at LEGO Pick a Brick</span><span><i class="dot bl"></i> BrickLink only</span></div>
+        </div>
+        <div class="ctas">
+          <div class="cta">
+            <button class="ctab lego" id="buy-lego"><span class="logo" aria-hidden="true">🧱</span><span><b>Buy at LEGO</b><small>Pick a Brick · official shop</small></span><span class="n"><b id="lego-n"></b><span id="lego-total"></span></span></button>
+            <label class="swline" id="lego-option"><input type="checkbox" id="prefer-lego" role="switch"><span class="sw" aria-hidden="true"></span><span id="prefer-text">Get every lot at LEGO: use only parts LEGO sells</span></label>
+          </div>
+          <div class="cta">
+            <button class="ctab bl" id="buy-bl"><span class="logo" aria-hidden="true">🛒</span><span><b>Buy on BrickLink</b><small id="bl-sub">Independent shops · the rest</small></span><span class="n"><b id="bl-n"></b><span id="bl-total"></span></span></button>
+            <div class="after" id="bl-after" hidden>✓ <span id="bl-after-text">List copied</span> · <b>Next:</b> <a href="https://www.bricklink.com/v2/wanted/upload.page" target="_blank" rel="noopener noreferrer">BrickLink Want → Upload</a>, choose “BrickLink XML format”, paste, then “Buy All” ↗</div>
+            <p class="swline plain" id="bl-option">or <button class="linkbtn" id="copy-all"></button> to buy everything there</p>
+          </div>
+        </div>
+        <div class="guide" id="lego-guide" hidden>
+          <h3>Buy at LEGO in 3 steps</h3>
+          <ol>
+            <li class="done"><span class="gn">✓</span><div><b>Your LEGO list is downloaded</b><small id="lego-file">Saved to your Downloads</small><button class="linkbtn" id="lego-again">Download it again</button></div></li>
+            <li><span class="gn">2</span><div><b>Go to Pick a Brick</b><small>LEGO’s own shop for single pieces. Uploading a list isn’t available in every country.</small><a class="btn go-lego" href="https://www.lego.com/pick-and-build/pick-a-brick" target="_blank" rel="noopener noreferrer">Open Pick a Brick ↗</a></div></li>
+            <li><span class="gn">3</span><div><b>Click “Upload List”, then choose your file</b><small>It’s next to the search bar. LEGO adds every piece it has to your bag and lists any it couldn’t add: get those on BrickLink.</small>
+              <figure class="shots">
+                <img src="./help/pab-upload-button.png" alt="On Pick a Brick, the Upload List button next to the search bar" loading="lazy">
+                <span class="shot2"><img src="./help/pab-upload-dialog.png" alt="The upload window: Choose your file or drop it here" loading="lazy"><i class="ring" aria-hidden="true"></i></span>
+                <figcaption>Screenshots of the Pick a Brick website, for guidance.</figcaption>
+              </figure></div></li>
+          </ol>
+        </div>
+        <details class="howorder">
+          <summary>How ordering works</summary>
+          <div class="howorder-body">
+            <p><b>LEGO Pick a Brick</b> is LEGO’s own shop for single pieces. “Buy at LEGO” downloads your list (<span id="pab-files"></span>). On Pick a Brick, click “Upload List”, choose the file, then check your bag: LEGO lists any piece it couldn’t add. Uploading a list isn’t available in every country: check <a href="https://www.lego.com/pick-and-build/pick-a-brick" target="_blank" rel="noopener noreferrer">Pick a Brick</a> for yours.</p>
+            <p><b>BrickLink</b> is a marketplace of independent shops selling single pieces, including the ones LEGO doesn’t sell or has out of stock. “Buy on BrickLink” copies your list. Sign in (with a LEGO account), open <a href="https://www.bricklink.com/v2/wanted/upload.page" target="_blank" rel="noopener noreferrer">Want → Upload</a>, choose “Upload BrickLink XML format”, paste, then open the new wanted list and use “Buy All” to find shops.</p>
+            <p class="files">Files: <button class="linkbtn" id="dl-pab">LEGO list (CSV)</button> · <button class="linkbtn" id="dl-xml-rest">BrickLink list, missing pieces (XML)</button> · <button class="linkbtn" id="dl-xml">BrickLink list, all pieces (XML)</button></p>
+          </div>
+        </details>
+      </section>
+      <div class="progress toast" id="progress" hidden><div class="bar"><i id="bar"></i></div><span id="progress-text"></span></div>
+    </div>
+
+    <section class="faq">
+      <h2>Questions</h2>
+      <details><summary>What happens to my logo?</summary><p>A file you drop or paste never leaves your browser: reading it, designing the sign, the 3D view, the PDF and the video all happen on your device. When you type a website, its address goes to a small logo finder run for this site. It opens that page like a browser would, lists the images that look like a logo, passes the one you pick back to you, and keeps nothing: no log of what you looked up, no copies of images beyond a one-day cache.</p></details>
+      <details><summary>Why didn’t it find the right logo?</summary><p>Websites show their logo in many ways, and some draw it with code that only works inside their own page. Pick another one from the list, or download the logo yourself (press kits and “brand” pages usually have clean PNG or SVG files) and drop it here. Transparent backgrounds and flat colours give the cleanest signs.</p></details>
+      <details><summary>Panel or cut-out?</summary><p><b>Panel</b> stands the logo one stud proud of a board in its background colour, like a shop sign: sturdy, and holes in letters stay readable. <b>Cut-out</b> builds only the logo. Parts that don’t touch anything below, like the dot on an “i”, are held by small clear bricks, and the site tells you when it adds them.</p></details>
+      <details><summary>Can I really build it?</summary><p>Every model is checked by computer: all pieces are standard parts in real colours, every piece is attached to the base (0 floating), no two pieces overlap (0 collisions), joints are staggered like a brick wall, and the centre of mass sits over the base. The site shows these checks for your sign and says so plainly if one fails. Models are not physically build-tested, so treat your first build as a test. Brand colours are matched to the nearest of 37 common brick colours, so some shades will shift.</p></details>
+      <details><summary>Can I use any company’s logo?</summary><p>Logos are trademarks of their owners. Building one for your own desk, or for your own company, is generally fine. Selling kits or signs of someone else’s logo, or using one in a way that suggests they endorse you, is not: ask the owner first. This isn’t legal advice.</p></details>
+      <details><summary>Is this official?</summary><p>No. Logo to Bricks is a free, open-source, unofficial fan project, not affiliated with, sponsored or endorsed by the LEGO Group or BrickLink. It sells nothing and earns nothing: no affiliate links, no commission, no tracking.</p></details>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <p>Unofficial fan project · Not affiliated with, sponsored or endorsed by the LEGO Group or BrickLink. LEGO® is a trademark of the LEGO Group. Logos belong to their owners. Parts data: <a href="https://rebrickable.com" target="_blank" rel="noopener noreferrer">Rebrickable</a>. No purchases, payments or personal data go through this site.</p>
+    <p>Models are computer-checked, not physically build-tested. Provided “as is”, without warranty.</p>
+    <p class="credit">Based on <a href="https://github.com/hs7j4yk4sz-boop/punk-to-bricks" target="_blank" rel="noopener noreferrer">Punk to Bricks</a> by John Karp (MIT licence).</p>
+  </footer>
+  <dialog id="before-order" aria-labelledby="bo-title">
+    <form method="dialog">
+      <h2 id="bo-title">Before you order</h2>
+      <ul>
+        <li>This is a free, open-source fan project. It sells nothing, receives no money or commission, and isn’t involved in your order in any way.</li>
+        <li>You buy directly from LEGO or from independent BrickLink sellers. Prices, availability, shipping, returns and customer service are entirely theirs.</li>
+        <li>Models are generated automatically and checked by software only. They have NOT been physically built. Parts may be missing, wrong or unavailable, and the result may not hold together.</li>
+        <li>Always review your cart carefully before paying.</li>
+        <li>Provided "as is", without warranty of any kind. Use at your own risk.</li>
+      </ul>
+      <label class="agree"><input type="checkbox" id="bo-ok" required> I understand</label>
+      <div class="bo-actions">
+        <button value="cancel" class="ghost" formnovalidate>Cancel</button>
+        <button value="ok" id="bo-continue" class="primary" disabled>Continue to download</button>
+      </div>
+    </form>
+  </dialog>
+  <script type="module" src="/src/main.ts"></script>
+</body>
+</html>

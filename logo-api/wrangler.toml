@@ -1,0 +1,18 @@
+# Cloudflare Worker settings for the logo finder. See DEPLOY.md, part 2.
+name = "logo-to-bricks-api"
+main = "worker.js"
+compatibility_date = "2025-09-01"
+
+# Which websites may use this logo finder. Put your GitHub Pages address here
+# (no trailing slash). Keep localhost only while you test on your computer.
+[vars]
+ALLOWED_ORIGINS = "https://0x-man.github.io,http://localhost:5173"
+
+# At most 30 requests per minute from one visitor's IP address.
+[[ratelimits]]
+name = "RATE_LIMITER"
+namespace_id = "1001"
+
+  [ratelimits.simple]
+  limit = 30
+  period = 60

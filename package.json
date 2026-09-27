@@ -1,0 +1,29 @@
+{
+  "name": "logo-to-bricks",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "examples": "tsx scripts/make-examples.ts",
+    "check:ui": "node scripts/ui-check.cjs out"
+  },
+  "devDependencies": {
+    "@napi-rs/canvas": "^1.0.9",
+    "@types/node": "^26.6.2",
+    "@types/three": "^0.186.0",
+    "playwright-core": "^1.63.0",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.1",
+    "vitest": "^5.0.1"
+  },
+  "dependencies": {
+    "jspdf": "^4.2.1",
+    "three": "^0.186.1"
+  },
+  "license": "MIT"
+}
